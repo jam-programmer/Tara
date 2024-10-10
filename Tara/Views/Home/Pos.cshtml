@@ -1,0 +1,207 @@
+﻿@using Application.ViewModel.PosViewModels
+@{
+    ViewData["Title"] = "ثبت سفارش";
+}
+@section Style{
+
+    <link rel="stylesheet" href="~/assets/vendor/libs/select2/select2.css">
+    <link rel="stylesheet" href="~/css/pos/pos.css">
+}
+@section Script{
+    <script src="~/assets/js/forms-selects.js"></script>
+    <script src="~/assets/vendor/libs/select2/select2.js"></script>
+    <script src="~/assets/vendor/libs/select2/i18n/fa.js"></script>
+
+
+      <script src="~/js/Pos/Pos.js"></script>
+}
+
+<div class="row invoice-add">
+    <!-- Invoice Add-->
+    <div class="col-lg-9 col-12 mb-lg-0 mb-4">
+        <div class="card invoice-preview-card">
+            <div class="card-body">
+                <div class="row p-sm-3 p-0">
+                    <div class="col-md-12 mb-md-0 mb-4">
+                        <div class="d-flex align-items-center svg-illustration mb-4 gap-2">
+                            <img src="~/img/jansnack-logo.jpg" width="140" height="140"/>
+                        </div>
+                        <p class="mb-1">تاریخ: @ViewBag.CreateTime</p>
+                        <p class="mb-1">تهران، خیابان تجریش، ساختمان فرشته</p>
+                        <p class="mb-1">طبقه 456، واحد 85 شرقی</p>
+                        <p class="mb-0"><span class="d-inline-block" dir="ltr">+1 (123) 456 7891</span> ، <span class="d-inline-block" dir="ltr">+44 (876) 543 2198</span></p>
+                    </div>
+                </div>
+                <hr class="my-4 mx-n4">
+                <div class="row p-sm-3 p-0">
+                    <div class="col-md-8 mb-md-0 mb-3">
+                        <div class="d-flex align-items-center mb-3">
+                            <label for="salesperson" class="form-label me-5 fw-semibold">خریدار:</label>
+                            <input type="text" id="cutomerName" class="form-control" >
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <label for="salesperson" class="form-label me-5 fw-semibold">موبایل:</label>
+                            <input type="text" id="customerPhoneNumber" class="form-control">
+                        </div>
+                         <div class="d-flex align-items-center mb-3">
+                            <label for="salesperson" class="form-label me-5 fw-semibold">بارکد کیف پول تارا:</label>
+                            <input type="text" id="barcode" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <hr class="mx-n4">
+                    <div class="mb-3" data-repeater-list="group-a">
+                        <div class="repeater-wrapper pt-0 pt-md-4" data-repeater-item="">
+                            <div class="d-flex border rounded position-relative pe-0">
+                                <div class="row w-100 m-0 p-3">
+                                    <div class="col-md-6 col-12 mb-md-0 mb-3">
+                                        <p class="mb-2 repeater-title">نام کالا</p>
+                                        <input type="text" id="productName" class="form-control invoice-item-price mb-2"  >
+
+                                    </div>
+                                    <div class="col-md-2 col-12 mb-md-0 mb-3">
+                                        <p class="mb-2 repeater-title">کد کالا</p>
+                                        <input type="text" id="productCode" class="form-control invoice-item-price mb-2">
+                                    </div>
+                                    <div class="col-md-4 col-12 mb-md-0 mb-3 ps-md-0">
+                                        <p class="mb-2 repeater-title">گروه کالا</p>
+                                       <select id="productGroup" class="form-select select2 item-details mb-2">  
+                                        <option value="0" selected="" disabled="">انتخاب مورد</option>  
+                                        @if (ViewBag.Groups != null)  
+                                        {  
+                                            foreach (var item in ViewBag.Groups as List<MerchandiseGroupViewModel>)  
+                                            {  
+                                                <option value="@item.id">@item.title</option>  
+                                            }  
+                                        }  
+                                    </select>
+                                       
+                                    </div>
+                                   
+                                    <div class="col-md-2 col-12 mb-md-0 mb-3">
+                                        <p class="mb-2 repeater-title">تعداد</p>
+                                        <input type="number" class="form-control invoice-item-qty" id="productCount" placeholder="1" min="1">
+                                    </div>
+                                    <div class="col-md-3 col-12 mb-md-0 mb-3 ps-md-0">
+                                        <p class="mb-2 repeater-title">واحد شمارش</p>
+                                        <select class="form-select item-details mb-2" id="productUnit">
+                                            <option  selected="" disabled="">انتخاب مورد</option>
+                                            <option value="1">کیلوگرم</option>
+                                            <option value="2">متر</option>
+                                            <option value="3">لیتر</option>
+                                            <option value="4">متر مربع</option>
+                                            <option value="5">عدد</option>
+                                            <option value="6">قطعه</option>
+                                            <option value="7">دستگاه</option>
+                                            <option value="8">دست</option>
+                                            <option value="9">بسته</option>
+                                            <option value="10">جعبه</option>
+                                            <option value="11">ست</option>
+                                            <option value="12">جفت</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 col-12 mb-md-0 mb-3 ps-md-0">
+                                        <p class="mb-2 repeater-title">برند کالا</p>
+                                        <select id="productMade" class="form-select item-details mb-2">
+                                            <option selected="" disabled="">انتخاب مورد</option>
+                                            <option value="0">نامشخص</option>
+                                            <option value="1">ایرانی</option>
+                                            <option value="2">خارجی</option>
+                                           
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 col-12 mb-md-0 mb-3">
+                                        <p class="mb-2 repeater-title">مبلغ واحد</p>
+                                        <input id="productFee" type="text" class="form-control invoice-item-price mb-2">
+
+                                    </div>  
+                               
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <input type="hidden" id="orderDetail"/>
+                        <input type="hidden" id="orderDateTime" value="@ViewBag.CreateTime"/>
+                        <input type="hidden" id="terminal" value="@ViewBag.Terminal" />
+
+
+          
+                        <div class="col-12">
+                            <a onclick="AddProduct()" class="btn btn-primary text-white" data-repeater-create="">افزودن مورد</a>
+                        </div>
+                    </div>
+                <div class="row mt-4">
+                    <div class="table-responsive">
+                      <table class="table border-top m-0">
+                        <thead>
+                          <tr>
+                            <th>نام کالا</th>
+                            <th>گروه کالا</th>
+                            <th>تعداد</th>
+                            <th>مبلغ واحد</th>
+                            <th>عملیات</th>
+                          </tr>
+                        </thead>
+                        <tbody id="PosTableBody">
+                        </tbody>
+                      </table>
+                    </div>
+                </div>
+                <div class="row py-sm-3">
+                   
+                    <div class="col-md-6 d-flex justify-content-start">
+                        <div class="invoice-calculations lh-2">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="w-px-100">جمع جزء:</span>
+                                <span class="fw-semibold">0 تومان</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="w-px-100">تخفیف:</span>
+                                <span class="fw-semibold">0 تومان</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="w-px-100">مالیات:</span>
+                                <span class="fw-semibold">0 تومان</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span class="w-px-100">جمع کل:</span>
+                                <span class="fw-semibold">0 تومان</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+               
+            </div>
+        </div>
+    </div>
+    <!-- /Invoice Add-->
+    <input type="hidden" id="OrderId"/>
+    <!-- Invoice Actions -->
+
+    <div class="col-lg-3 col-12 invoice-actions">
+        <div class="card mb-4">
+            <div class="card-body">
+                <button class="btn btn-primary d-grid w-100 mt-3 mb-3" onclick="RegisterOrder()">
+                    <span class="d-flex align-items-center justify-content-center text-nowrap">ثبت اولیه سفارش</span>
+                </button>
+
+                <button class="btn btn-tara d-grid text-white w-100 mt-3 mb-3 hide-btn-tara" 
+                id="btnTara"
+                onclick="RegisterTara()">
+                    <span class="d-flex align-items-center justify-content-center
+text-nowrap">ثبت سفارش در سامانه تارا</span>
+                </button>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- /Invoice Actions -->
+</div>

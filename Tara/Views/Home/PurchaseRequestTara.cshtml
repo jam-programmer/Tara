@@ -1,0 +1,33 @@
+﻿@model Guid
+@{
+    ViewData["Title"] = "تائید خرید اعتباری از سامانه تارا";
+}
+@section Script{
+    <script src="~/js/PurchaseRequestTara/PurchaseRequestTara.js"></script>
+}
+
+<div class="row mt-5">
+    <div class="col-md-6 col-lg-6 offset-md-3">
+        <div class="card text-center mb-3">
+            <div class="card-body">
+                <img src="~/img/tara-logo.png" width="115" height="80"/>
+                    @if (ViewBag.Error ==null)
+                      {
+                    <h5 class="card-title mt-3">
+                        سفارش در سامانه تارا با موفقیت ثبت شد.
+                    </h5>
+                    <p class="card-text">جهت تائید خرید یا لغو سفارش در سامانه تارا کلیک کنید.</p>
+                    <input type="hidden" value="@Model" id="orderId"/>
+                    <input type="hidden" value="@ViewBag.Terminal" id="terminal" />
+                    <a class="btn btn-tara text-white" onclick="VerifyPurchase()">تائید خرید اعتباری از تارا</a>
+                    <a class="btn  btn-label-secondary text-secondary" onclick="ReversePurchase()">لغو سفارش</a>
+                    }
+                    else
+                    { <h5 class="card-title mt-3">
+                        @ViewBag.Error
+                    </h5>
+                    }
+            </div>
+        </div>
+    </div>
+</div>

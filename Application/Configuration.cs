@@ -1,5 +1,7 @@
 ﻿
 
+using Application.Services.Purchase;
+
 namespace Application
 {
     public static class Configuration
@@ -48,6 +50,7 @@ namespace Application
 
             service.AddScoped<ITaraWebService,TaraWebService>();
             service.AddScoped<IPos,Pos>();
+            service.AddScoped<IPurchase, Purchase>();
 
             return service;
 

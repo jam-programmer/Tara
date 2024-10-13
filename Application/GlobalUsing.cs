@@ -10,6 +10,8 @@ global using Application.Services.Tara;
 global using Application.ViewModel.PosViewModels;
 global using Domain.Entities;
 global using Mapster;
+global using Application.ViewModel.PurchaseViewModels;
+
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;

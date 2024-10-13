@@ -22,6 +22,8 @@ public class TaraWebService : ITaraWebService
         _apiService = apiService;
     }
 
+    #region Purchase In Person
+
 
     public async Task<PurchaseResponseModel>? PurchaseAsync(PurchaseRequestModel request)
     {
@@ -130,5 +132,69 @@ public class TaraWebService : ITaraWebService
                DataBody = request
            });
         return reversePurchase;
+    }
+
+
+
+    #endregion
+
+
+
+
+
+    public async Task<AuthenticateResponseModel>? AuthenticateAsync()
+    {
+        AuthenticateResponseModel response = 
+            await _apiService.PostAsync<AuthenticateResponseModel>(new ApiOption()
+        {
+            BaseUrl = DefaultData.BaseUrlOnlinePurchase + "api/v2/authenticate",
+            DataBody = new
+            {
+                DefaultData.OnlinePurchaseUserName,
+                DefaultData.OnlinePurchasePassword
+            }
+        });
+        return response;
+    }
+    private async Task<AuthenticateResponseModel>? GetTemporaryAuthenticateTokenFromCacheAsync()
+    {
+        AuthenticateResponseModel? temporaryAuthenticateToken;
+        var cacheValue = await _cache.GetAsync(DefaultData.TemporaryAuthenticateTokenCacheKry);
+        if (cacheValue == null)
+        {
+            temporaryAuthenticateToken = await AuthenticateAsync();
+
+            TimeSpan timeSpan = TimeSpan.FromSeconds(temporaryAuthenticateToken.expireTime!.Value);
+            string serializedSetting = JsonSerializer.Serialize(temporaryAuthenticateToken);
+
+            byte[] settingEncoded = Encoding.UTF8.GetBytes(serializedSetting);
+            await _cache.SetAsync(DefaultData.TemporaryAuthenticateTokenCacheKry, settingEncoded,
+              new DistributedCacheEntryOptions()
+                    .SetSlidingExpiration(timeSpan));
+        }
+        else
+        {
+            temporaryAuthenticateToken = JsonSerializer.Deserialize<AuthenticateResponseModel>(cacheValue);
+        }
+        return temporaryAuthenticateToken;
+    }
+
+    public async Task<List<ProductGroupResponseModel>>? GetProductGroupAsync(CancellationToken cancellationToken = default)
+    {
+        AuthenticateResponseModel? authenticate = await
+            GetTemporaryAuthenticateTokenFromCacheAsync()!;
+        if (authenticate is null)
+        {
+            //Todo Log
+        }
+        List<ProductGroupResponseModel> groups =
+            await _apiService.PostAsync<List<ProductGroupResponseModel>>
+            (new ApiOption()
+            {
+                BaseUrl = DefaultData.BaseUrlOnlinePurchase
+                + "api/clubGroups",
+               BearerToken=authenticate!.accessToken
+            });
+        return groups;
     }
 }

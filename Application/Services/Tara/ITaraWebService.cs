@@ -1,34 +1,31 @@
-﻿
-using Application.Model.Tara.Request;
-
-namespace Application.Services.Tara;
+﻿namespace Application.Services.Tara;
 
 public interface ITaraWebService
 {
+    #region Purchase In Person
 
-    Task<List<MerchantAccessResponseModel>>? 
+    Task<List<MerchantAccessResponseModel>>?
         GetMerchantAccessesAsync();
-
-
- 
-    Task<TrackingCodeResponseModel> ?
+    Task<TrackingCodeResponseModel>?
         GetTrackingCodeAsync(PaymentInformationRequestModel request);
-
-
-  
     Task<PurchaseResponseModel>?
         PurchaseAsync(PurchaseRequestModel request);
-
-
-
-   
     Task<List<MerchandiseGroupResponseModel>>?
         GetMerchandiseGroupAsync(MerchandiseGroupRequestModel request);
-
     Task<VerifyPurchaseResponseModel>
-        ? VerifyPurchaseAsync(VerifyPurchaseRequestModel request); 
-    
+        ? VerifyPurchaseAsync(VerifyPurchaseRequestModel request);
     Task<ReversePurchaseResponseModel>
         ? ReversePurchaseAsync(ReversePurchaseRequestModel request);
+    #endregion
+
+
+
+    #region Internet Shopping
+
+    Task<List<ProductGroupResponseModel>>?
+        GetProductGroupAsync(CancellationToken cancellationToken=default);
+
+
+    #endregion
 
 }

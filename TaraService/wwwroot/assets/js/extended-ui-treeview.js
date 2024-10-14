@@ -84,7 +84,7 @@ $(function () {
             ]
           },
           {
-            text: 'index.html',
+         /*   text: 'index.html',*/
             type: 'html'
           },
           {
@@ -178,7 +178,7 @@ $(function () {
             ]
           },
           {
-            text: 'index.html',
+           /* text: 'index.html',*/
             type: 'html'
           },
           {
@@ -285,7 +285,7 @@ $(function () {
             ]
           },
           {
-            text: 'index.html',
+           /* text: 'index.html',*/
             type: 'html'
           },
           {
@@ -378,7 +378,7 @@ $(function () {
             ]
           },
           {
-            text: 'index.html',
+          /*  text: 'index.html',*/
             type: 'html'
           },
           {

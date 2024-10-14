@@ -1,15 +1,15 @@
 ﻿using Application.Services.Purchase;
-using Application.ViewModel.PurchaseViewModels;
 using Carter;
+using Application.ViewModel.PurchaseViewModels;
+
 
 namespace Tara.WebServices;
 
-public class PaymentService : ICarterModule
+public class ProductService : ICarterModule
 {
-  
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        RouteGroupBuilder baseRoute = app.MapGroup("/TaraService");
+        RouteGroupBuilder baseRoute = app.MapGroup("/Product");
         baseRoute.MapGet("/GetProductGroup", async (IPurchase _purchase) =>
         {
 

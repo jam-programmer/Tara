@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InputUnclear" xml:space="preserve">
+    <value>ورودی نامشخص است(داده ای به سرور ارسال نشده)</value>
+  </data>
   <data name="InternalError" xml:space="preserve">
     <value>خطای داخلی رخ داده است.</value>
   </data>
@@ -125,6 +128,9 @@
   </data>
   <data name="ProblemConnectingTara" xml:space="preserve">
     <value>فرایند اتصال به سامانه تارا با مشکل مواجه شد.</value>
+  </data>
+  <data name="RequestNotValid" xml:space="preserve">
+    <value>داده های ارسالی نامعتبر هستند</value>
   </data>
   <data name="WebServiceException" xml:space="preserve">
     <value>خطای بحرانی وب سرویس</value>

@@ -1,6 +1,0 @@
-@TaraWebApi_HostAddress = http://localhost:5108
-
-GET {{TaraWebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

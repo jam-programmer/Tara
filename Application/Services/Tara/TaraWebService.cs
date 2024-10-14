@@ -197,4 +197,39 @@ public class TaraWebService : ITaraWebService
             });
         return groups;
     }
+
+    public async Task<TokenPaymentGatewayResponseModel>? 
+        GetTokenPaymentGatewayAsync(TokenPaymentGatewayRequestModel request,
+        CancellationToken cancellationToken = default)
+    {
+        AuthenticateResponseModel? authenticate = await
+           GetTemporaryAuthenticateTokenFromCacheAsync()!;
+        if (authenticate is null)
+        {
+            //Todo Log
+        }
+        TokenPaymentGatewayResponseModel response =
+            await _apiService.PostAsync<TokenPaymentGatewayResponseModel>(new ApiOption()
+            {
+                BaseUrl = DefaultData.BaseUrlOnlinePurchase
+                + "api/getToken",
+                BearerToken = authenticate!.accessToken,
+                DataBody=request
+            });
+        return response;
+    }
+
+    public async Task GoToIpgPurchaseAsync(IpgPurchaseRequestModel request)
+    {
+        Dictionary<string, string> data = new();
+        data.Add("token", request.token);
+        data.Add("username", request.username);
+        await _apiService.PostWithOutResponseAsync(new ApiOption()
+        {
+            BaseUrl = DefaultData.BaseUrlOnlinePurchase
+                + "api/ipgPurchase",
+
+            Data = data
+        });
+    }
 }

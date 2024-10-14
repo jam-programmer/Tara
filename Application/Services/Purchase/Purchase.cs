@@ -27,4 +27,9 @@ public class Purchase : IPurchase
         return productGroups;
 
     }
+
+    public async Task SavePaymentGatewayResponseAsync(PaymentGatewayResponseModel? model = null, CancellationToken cancellation = default)
+    {
+        throw new NotImplementedException();
+    }
 }

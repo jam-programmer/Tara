@@ -61,6 +61,15 @@ namespace Application.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ورودی نامشخص است(داده ای به سرور ارسال نشده).
+        /// </summary>
+        public static string InputUnclear {
+            get {
+                return ResourceManager.GetString("InputUnclear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to خطای داخلی رخ داده است..
         /// </summary>
         public static string InternalError {
@@ -84,6 +93,15 @@ namespace Application.Common {
         public static string ProblemConnectingTara {
             get {
                 return ResourceManager.GetString("ProblemConnectingTara", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to داده های ارسالی نامعتبر هستند.
+        /// </summary>
+        public static string RequestNotValid {
+            get {
+                return ResourceManager.GetString("RequestNotValid", resourceCulture);
             }
         }
         

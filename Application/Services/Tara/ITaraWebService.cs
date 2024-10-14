@@ -25,7 +25,12 @@ public interface ITaraWebService
     Task<List<ProductGroupResponseModel>>?
         GetProductGroupAsync(CancellationToken cancellationToken=default);
 
+    Task<TokenPaymentGatewayResponseModel>? GetTokenPaymentGatewayAsync(
+        TokenPaymentGatewayRequestModel request 
+        ,CancellationToken cancellationToken=default);
 
+
+    Task GoToIpgPurchaseAsync(IpgPurchaseRequestModel request);
     #endregion
 
 }

@@ -19,6 +19,7 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+   
     public async Task<IActionResult> Index()
     {
         List<PosViewModel> pageModel = await _pos.GetPosesAsync();
@@ -30,6 +31,9 @@ public class HomeController : Controller
     public async Task<IActionResult>
         Pos(string terminal, CancellationToken cancellation = default)
     {
+
+        ModelState.IsValid
+
         List<MerchandiseGroupViewModel> groups;
         var pageModel = (Result<List<MerchandiseGroupViewModel>>)await _pos.GetMerchandiseGroupsAsync(terminal, cancellation);
 

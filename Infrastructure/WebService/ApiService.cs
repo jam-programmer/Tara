@@ -1,4 +1,6 @@
 ﻿
+using Application.Common;
+
 namespace Infrastructure.WebService
 {
     public class ApiService(ILogger<ApiService> logger) : IApiService
@@ -6,7 +8,7 @@ namespace Infrastructure.WebService
         private ILogger<ApiService> _logger = logger;
 
 
-        public async Task<TResult> GetAsync<TResult>(ApiOption config)
+        public async Task<TResult> GetAsync<TResult>(ApiOption config, CancellationToken cancellationToken = default)
         {
             HttpClient httpClient = new HttpClient();
             SetTimeout(config.TimeOut, httpClient);
@@ -16,7 +18,7 @@ namespace Infrastructure.WebService
 
             try
             {
-                HttpResponseMessage response = await httpClient.GetAsync(requestUrl);
+                HttpResponseMessage response = await httpClient.GetAsync(requestUrl,cancellationToken);
                 return await HandleResponse<TResult>(response);
             }
             catch (Exception ex)
@@ -26,7 +28,7 @@ namespace Infrastructure.WebService
             }
         }
 
-        public async Task<TResult> PostAsync<TResult>(ApiOption config)
+        public async Task<TResult> PostAsync<TResult>(ApiOption config, CancellationToken cancellationToken = default)
         {
             HttpClient httpClient = new HttpClient();
 
@@ -37,7 +39,7 @@ namespace Infrastructure.WebService
 
             try
             {
-                HttpResponseMessage response = await httpClient.PostAsync(config.BaseUrl, content);
+                HttpResponseMessage response = await httpClient.PostAsync(config.BaseUrl, content,cancellationToken);
                 return await HandleResponse<TResult>(response);
             }
             catch (Exception ex)
@@ -110,6 +112,42 @@ namespace Infrastructure.WebService
             _logger.LogError( Message.WebServiceExceptionDetail + $" - {responseContentError}");
 
             return default;
+        }
+
+        public async Task PostWithOutResponseAsync(ApiOption config, CancellationToken cancellationToken)
+        {
+            HttpClient httpClient = new HttpClient();
+            SetTimeout(config.TimeOut, httpClient);
+            AddHeaders(config.HeaderParameters, httpClient);
+            Authorization(config.BearerToken, httpClient);
+            MultipartFormDataContent formContent= SetFormData(config.Data);
+            try
+            {
+                await httpClient.PostAsync(config.BaseUrl, formContent, cancellationToken);
+               
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, Message.WebServiceException + $" - {config.BaseUrl}");
+               
+            }
+        }
+        private MultipartFormDataContent? SetFormData(Dictionary<string, string> data)
+        {
+            MultipartFormDataContent formData = new MultipartFormDataContent();
+
+            if(data == null)
+            {
+                return null;
+            }
+            foreach (var item in data)
+            {
+               
+                formData.Add(new StringContent(item.Key), item.Value);
+              
+            }
+
+            return formData;
         }
     }
 }

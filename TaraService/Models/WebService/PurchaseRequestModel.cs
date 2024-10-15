@@ -1,17 +1,33 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Application.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace TaraService.Models.WebService;
 
 public record PurchaseRequestModel
 {
-    [Required]
+    /// <summary>
+    /// 
+    /// </summary>
+    [Required(ErrorMessage = "amountRequired", ErrorMessageResourceType =typeof(Message))]
     public string? amount { set; get; }
-    [Required]
+    /// <summary>
+    /// 
+    /// </summary>
+    [Required(ErrorMessage = "mobileRequired", ErrorMessageResourceType = typeof(Message))]
     public string? mobile { set; get; }
-    [Required]
-    public string? orderId { set; get; }
-    [Required]
+    /// <summary>
+    /// 
+    /// </summary>
+    //[Required(ErrorMessage = "orderIdRequired", ErrorMessageResourceType = typeof(Message))]
+    //public string? orderId { set; get; }
+    /// <summary>
+    /// 
+    /// </summary>
+    [Required(ErrorMessage = "vatRequired", ErrorMessageResourceType = typeof(Message))]
     public long vat { set; get; }
-    [Required]
+    /// <summary>
+    /// 
+    /// </summary>
+    [Required(ErrorMessage = "productsRequired", ErrorMessageResourceType = typeof(Message))]
     public List<PurchaseProduct>? products { set; get; }
 }

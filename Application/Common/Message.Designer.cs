@@ -61,6 +61,60 @@ namespace Application.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to مبلغ الزامی است..
+        /// </summary>
+        public static string amountRequired {
+            get {
+                return ResourceManager.GetString("amountRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to کد محصول الزامی است..
+        /// </summary>
+        public static string codeRequired {
+            get {
+                return ResourceManager.GetString("codeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تعداد محصول الزامی است..
+        /// </summary>
+        public static string countRequired {
+            get {
+                return ResourceManager.GetString("countRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to قیمت واحد محصول الزامی است..
+        /// </summary>
+        public static string feeRequired {
+            get {
+                return ResourceManager.GetString("feeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شناسه گروه کالا الزامی است..
+        /// </summary>
+        public static string groupRequired {
+            get {
+                return ResourceManager.GetString("groupRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نام گروه محصول الزامی است..
+        /// </summary>
+        public static string groupTitleRequired {
+            get {
+                return ResourceManager.GetString("groupTitleRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ورودی نامشخص است(داده ای به سرور ارسال نشده).
         /// </summary>
         public static string InputUnclear {
@@ -88,6 +142,33 @@ namespace Application.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to شماره موبایل الزامی است..
+        /// </summary>
+        public static string mobileRequired {
+            get {
+                return ResourceManager.GetString("mobileRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to نام محصول الزامی است..
+        /// </summary>
+        public static string nameRequired {
+            get {
+                return ResourceManager.GetString("nameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شماره سفارش الزامی است..
+        /// </summary>
+        public static string orderIdRequired {
+            get {
+                return ResourceManager.GetString("orderIdRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to فرایند اتصال به سامانه تارا با مشکل مواجه شد..
         /// </summary>
         public static string ProblemConnectingTara {
@@ -97,11 +178,38 @@ namespace Application.Common {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to لیست محصولات الزامی است..
+        /// </summary>
+        public static string productsRequired {
+            get {
+                return ResourceManager.GetString("productsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to داده های ارسالی نامعتبر هستند.
         /// </summary>
         public static string RequestNotValid {
             get {
                 return ResourceManager.GetString("RequestNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to واحد محصول الزامی است..
+        /// </summary>
+        public static string unitRequired {
+            get {
+                return ResourceManager.GetString("unitRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to مالیات بر ارزش افزوده الزامی است..
+        /// </summary>
+        public static string vatRequired {
+            get {
+                return ResourceManager.GetString("vatRequired", resourceCulture);
             }
         }
         

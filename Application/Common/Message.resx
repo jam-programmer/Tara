@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="amountRequired" xml:space="preserve">
+    <value>مبلغ الزامی است.</value>
+  </data>
+  <data name="codeRequired" xml:space="preserve">
+    <value>کد محصول الزامی است.</value>
+  </data>
+  <data name="countRequired" xml:space="preserve">
+    <value>تعداد محصول الزامی است.</value>
+  </data>
+  <data name="feeRequired" xml:space="preserve">
+    <value>قیمت واحد محصول الزامی است.</value>
+  </data>
+  <data name="groupRequired" xml:space="preserve">
+    <value>شناسه گروه کالا الزامی است.</value>
+  </data>
+  <data name="groupTitleRequired" xml:space="preserve">
+    <value>نام گروه محصول الزامی است.</value>
+  </data>
   <data name="InputUnclear" xml:space="preserve">
     <value>ورودی نامشخص است(داده ای به سرور ارسال نشده)</value>
   </data>
@@ -126,11 +144,29 @@
   <data name="InvalidPurchase" xml:space="preserve">
     <value>خرید نامعتبر است.</value>
   </data>
+  <data name="mobileRequired" xml:space="preserve">
+    <value>شماره موبایل الزامی است.</value>
+  </data>
+  <data name="nameRequired" xml:space="preserve">
+    <value>نام محصول الزامی است.</value>
+  </data>
+  <data name="orderIdRequired" xml:space="preserve">
+    <value>شماره سفارش الزامی است.</value>
+  </data>
   <data name="ProblemConnectingTara" xml:space="preserve">
     <value>فرایند اتصال به سامانه تارا با مشکل مواجه شد.</value>
   </data>
+  <data name="productsRequired" xml:space="preserve">
+    <value>لیست محصولات الزامی است.</value>
+  </data>
   <data name="RequestNotValid" xml:space="preserve">
     <value>داده های ارسالی نامعتبر هستند</value>
+  </data>
+  <data name="unitRequired" xml:space="preserve">
+    <value>واحد محصول الزامی است.</value>
+  </data>
+  <data name="vatRequired" xml:space="preserve">
+    <value>مالیات بر ارزش افزوده الزامی است.</value>
   </data>
   <data name="WebServiceException" xml:space="preserve">
     <value>خطای بحرانی وب سرویس</value>

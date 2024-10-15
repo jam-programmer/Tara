@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="EntityFrameworkCore.Data.QueryBuilder" Version="8.0.2" />
     <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="4.0.2" />

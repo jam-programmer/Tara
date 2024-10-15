@@ -11,6 +11,10 @@ builder.Services.Infrastructure(builder.Configuration);
 builder.Services.Application(builder.Configuration);
 
 builder.Services.AddCarter();
+builder.Services.AddHttpContextAccessor(); 
+
+
+
 
 var app = builder.Build();
 

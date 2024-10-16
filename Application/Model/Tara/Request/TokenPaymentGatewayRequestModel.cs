@@ -1,6 +1,6 @@
 ﻿namespace Application.Model.Tara.Request;
 
-public record TokenPaymentGatewayRequestModel
+public sealed record TokenPaymentGatewayRequestModel
 {
     public string? ip { set; get; }
     public string? additionalData { set; get; }

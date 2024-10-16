@@ -1,6 +1,6 @@
 ﻿namespace Application.Model.Tara.Request;
 
-public record TaraInvoiceItem
+public sealed record TaraInvoiceItem
 {
     public string name {  get; set; }
     public string code {  get; set; }

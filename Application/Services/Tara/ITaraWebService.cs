@@ -16,6 +16,8 @@ public interface ITaraWebService
         ? VerifyPurchaseAsync(VerifyPurchaseRequestModel request);
     Task<ReversePurchaseResponseModel>
         ? ReversePurchaseAsync(ReversePurchaseRequestModel request);
+
+
     #endregion
 
 
@@ -31,6 +33,10 @@ public interface ITaraWebService
 
 
     Task GoToIpgPurchaseAsync(IpgPurchaseRequestModel request);
+
+
+
+
     #endregion
 
 }

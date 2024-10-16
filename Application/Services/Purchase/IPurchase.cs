@@ -1,4 +1,6 @@
-﻿namespace Application.Services.Purchase;
+﻿using Application.Dto.Purchase;
+
+namespace Application.Services.Purchase;
 
 public interface IPurchase
 {
@@ -8,7 +10,7 @@ public interface IPurchase
     
     Task PurchaseRequestAsync(OrderDto order,CancellationToken cancellation=default);
 
-
+    Task PurchaseVerifyAsync(VerifyDto verify,CancellationToken cancellation=default);  
 
 
 

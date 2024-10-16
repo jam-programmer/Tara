@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 namespace Application.Model.Tara.Request;
 
-public record VerifyPurchaseRequestModel
+public sealed record VerifyPurchaseRequestModel
 {
     [JsonIgnore]
     public string? CashDeskToken { get; set; }

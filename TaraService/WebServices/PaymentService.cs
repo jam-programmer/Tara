@@ -21,11 +21,12 @@ public class PaymentService : ICarterModule
     {
         RouteGroupBuilder baseRoute = app.MapGroup("/TaraService");
 
-        //baseRoute.MapPost("/BackPaymentGateway", async ([FromBody] BackPaymentGatewayModel response,
-        //    IPurchase purchase) =>
-        //{
-        //    //await purchase.SavePaymentGatewayResponseAsync(response.Adapt<PaymentGatewayResponseModel>());
-        //});
+        baseRoute.MapPost("/BackPaymentGateway", async ([FromBody] BackPaymentGatewayModel response,
+            IPurchase purchase) =>
+        {
+
+
+        });
 
 
 
@@ -58,11 +59,6 @@ public class PaymentService : ICarterModule
             OrderDto order = new();
             order=request.Adapt<OrderDto>();
             order.products = orderItems;
-            
-
-
-
-
             await purchase.PurchaseRequestAsync(order);
             return Results.Ok();
         });

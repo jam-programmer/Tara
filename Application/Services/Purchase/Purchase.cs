@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Application.Dto.Purchase;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Services.Purchase;
 
@@ -138,4 +139,8 @@ public class Purchase : IPurchase
         }
     }
 
+    public async Task PurchaseVerifyAsync(VerifyDto verify, CancellationToken cancellation = default)
+    {
+        throw new NotImplementedException();
+    }
 }

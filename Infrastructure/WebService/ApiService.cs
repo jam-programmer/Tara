@@ -105,13 +105,13 @@ namespace Infrastructure.WebService
             if (response.IsSuccessStatusCode)
             {
                 string responseContent = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<TResult>(responseContent);
+                return JsonConvert.DeserializeObject<TResult>(responseContent)!;
             }
 
             string responseContentError = await response.Content.ReadAsStringAsync();
             _logger.LogError( Message.WebServiceExceptionDetail + $" - {responseContentError}");
 
-            return default;
+            return default!;
         }
 
         public async Task PostWithOutResponseAsync(ApiOption config, CancellationToken cancellationToken)

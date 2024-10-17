@@ -12,6 +12,7 @@ namespace Infrastructure
             });
             service.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             service.AddScoped<IApiService, ApiService>();
+            service.AddScoped<IContext, ContextRepository>();
             
             return service;
 

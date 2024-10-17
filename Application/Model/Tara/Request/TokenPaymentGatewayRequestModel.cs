@@ -1,4 +1,6 @@
-﻿namespace Application.Model.Tara.Request;
+﻿using Application.Model.Tara.Common;
+
+namespace Application.Model.Tara.Request;
 
 public sealed record TokenPaymentGatewayRequestModel
 {

@@ -1,6 +1,6 @@
 ﻿using Application.Dto.Purchase;
 using Microsoft.AspNetCore.Http;
-
+using Application.Model.Tara.Common;
 namespace Application.Services.Purchase;
 
 public class Purchase : IPurchase
@@ -37,6 +37,14 @@ public class Purchase : IPurchase
             productGroups = groups.Adapt<List<ProductGroupViewModel>>();
         return productGroups;
     }
+
+
+
+
+
+
+
+
 
     public async Task PurchaseRequestAsync
         (OrderDto order, CancellationToken cancellation = default)
@@ -96,8 +104,8 @@ public class Purchase : IPurchase
 
         await _taraWebService.GoToIpgPurchaseAsync(new IpgPurchaseRequestModel()
         {
-            username=DefaultData.OnlinePurchaseUserName,
-            token= getTokenPaymentGateway.token
+            username = DefaultData.OnlinePurchaseUserName,
+            token = getTokenPaymentGateway.token
         });
         #endregion
     }
@@ -141,6 +149,33 @@ public class Purchase : IPurchase
 
     public async Task PurchaseVerifyAsync(VerifyDto verify, CancellationToken cancellation = default)
     {
-        throw new NotImplementedException();
+        IQueryable<OrderEntity>
+            query = await _orderRepository.GetByQueryAsync();
+        OrderEntity? order = await query
+            .SingleOrDefaultAsync(s => s.Id ==
+            Guid.Parse(verify.orderId), cancellation);
+        if (order is null)
+        {
+            return;
+        }
+        PurchaseVerifyResponseModel response =
+            await _taraWebService.
+            PurchaseVerifyAsync(new PurchaseVerifyRequestModel()
+            {
+                accessToken = verify.token,
+                ip = _httpContextAccessor.
+                HttpContext.
+                Connection.
+                RemoteIpAddress.ToString()
+            }, cancellation);
+        if (response is null)
+        {
+            return;
+        }
+
+
+
+
+
     }
 }

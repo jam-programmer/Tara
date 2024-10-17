@@ -32,7 +32,7 @@ public class HomeController : Controller
         Pos(string terminal, CancellationToken cancellation = default)
     {
 
-        ModelState.IsValid
+       
 
         List<MerchandiseGroupViewModel> groups;
         var pageModel = (Result<List<MerchandiseGroupViewModel>>)await _pos.GetMerchandiseGroupsAsync(terminal, cancellation);

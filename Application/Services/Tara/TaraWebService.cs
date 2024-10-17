@@ -150,8 +150,8 @@ public class TaraWebService : ITaraWebService
             BaseUrl = DefaultData.BaseUrlOnlinePurchase + "api/v2/authenticate",
             DataBody = new
             {
-                DefaultData.OnlinePurchaseUserName,
-                DefaultData.OnlinePurchasePassword
+                username = DefaultData.OnlinePurchaseUserName,
+               password = DefaultData.OnlinePurchasePassword
             }
         });
         return response;
@@ -162,7 +162,7 @@ public class TaraWebService : ITaraWebService
         var cacheValue = await _cache.GetAsync(DefaultData.TemporaryAuthenticateTokenCacheKry);
         if (cacheValue == null)
         {
-            temporaryAuthenticateToken = await AuthenticateAsync();
+            temporaryAuthenticateToken = await AuthenticateAsync()!;
 
             TimeSpan timeSpan = TimeSpan.FromSeconds(temporaryAuthenticateToken.expireTime!.Value);
             string serializedSetting = JsonSerializer.Serialize(temporaryAuthenticateToken);
@@ -221,15 +221,43 @@ public class TaraWebService : ITaraWebService
 
     public async Task GoToIpgPurchaseAsync(IpgPurchaseRequestModel request)
     {
+        AuthenticateResponseModel? authenticate = await
+           GetTemporaryAuthenticateTokenFromCacheAsync()!;
+        if (authenticate is null)
+        {
+            //Todo Log
+        }
         Dictionary<string, string> data = new();
-        data.Add("token", request.token);
-        data.Add("username", request.username);
+        data.Add("token", request.token!);
+        data.Add("username", request.username!);
         await _apiService.PostWithOutResponseAsync(new ApiOption()
         {
-            BaseUrl = DefaultData.BaseUrlOnlinePurchase
-                + "api/ipgPurchase",
-
+            BearerToken = authenticate!.accessToken,
+            BaseUrl = DefaultData.BaseUrlOnlinePurchase + 
+            "api/ipgPurchase",
             Data = data
         });
+    }
+
+    public async Task<PurchaseVerifyResponseModel> PurchaseVerifyAsync
+        (PurchaseVerifyRequestModel request,
+        CancellationToken cancellation = default)
+    {
+        AuthenticateResponseModel? authenticate = await
+          GetTemporaryAuthenticateTokenFromCacheAsync()!;
+        if (authenticate is null)
+        {
+            //Todo Log
+        }
+        Dictionary<string, string> data = new();
+        PurchaseVerifyResponseModel? response=
+         await _apiService.PostAsync<PurchaseVerifyResponseModel>(new ApiOption()
+        {
+            BearerToken = authenticate!.accessToken,
+            BaseUrl = DefaultData.BaseUrlOnlinePurchase +
+            "api/purchaseVerify",
+            DataBody =request
+        },cancellation);
+        return response;
     }
 }

@@ -3,7 +3,7 @@
     public record DefaultData
     {
         public const string BaseUrl = "https://stage.tara-club.ir/club/";
-        public const string BaseUrlOnlinePurchase = "https://pay.tara360.ir/pay/";
+        public const string BaseUrlOnlinePurchase = "https://stage-pay.tara360.ir/pay/";
         public const string principal = "jansnak_sandbox";
         public const string password = "1qaz@WSX";
         public const string branchCode = "14030701";

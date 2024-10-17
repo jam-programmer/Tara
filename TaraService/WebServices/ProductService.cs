@@ -13,25 +13,17 @@ public class ProductService : ICarterModule
         RouteGroupBuilder baseRoute = app.MapGroup("/api/v1/Product");
         baseRoute.MapGet("/GetProductGroup", async (IPurchase _purchase) =>
         {
-            try
-            {
-                List<ProductGroupViewModel> result =
+            List<ProductGroupViewModel> result =
                         await _purchase.GetProductGroupsAsync();
-                if (result is null)
-                {
-                    return Results.StatusCode(500);
-                }
-                if (result.Count() == 0)
-                {
-                    return Results.NoContent();
-                }
-                return Results.Ok(ResponseBase.Success(data: result));
-            }
-            catch (Exception ex)
+            if (result is null)
             {
-      
                 return Results.StatusCode(500);
             }
+            if (result.Count() == 0)
+            {
+                return Results.NoContent();
+            }
+            return Results.Ok(ResponseBase.Success(data: result));
         });
     }
 }

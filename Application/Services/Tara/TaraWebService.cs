@@ -174,7 +174,8 @@ public class TaraWebService : ITaraWebService
         }
         else
         {
-            temporaryAuthenticateToken = JsonSerializer.Deserialize<AuthenticateResponseModel>(cacheValue);
+            temporaryAuthenticateToken =
+                JsonSerializer.Deserialize<AuthenticateResponseModel>(cacheValue);
         }
         return temporaryAuthenticateToken;
     }

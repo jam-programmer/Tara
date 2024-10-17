@@ -32,15 +32,23 @@ public class Purchase : IPurchase
     public async Task<List<ProductGroupViewModel>?>
         GetProductGroupsAsync(CancellationToken cancellation = default)
     {
-        List<ProductGroupResponseModel>? groups =
-            await _taraWebService.GetProductGroupAsync(cancellation)!;
-        if (groups is null)
+
+        try
         {
-            return null;
+            List<ProductGroupResponseModel>? groups =
+            await _taraWebService.GetProductGroupAsync(cancellation)!;
+            if (groups is null)
+            {
+                return null;
+            }
+            List<ProductGroupViewModel>
+                productGroups = groups.Adapt<List<ProductGroupViewModel>>();
+            return productGroups;
         }
-        List<ProductGroupViewModel>
-            productGroups = groups.Adapt<List<ProductGroupViewModel>>();
-        return productGroups;
+        catch (Exception ex) 
+        {
+            throw ex;
+        }
     }
 
 

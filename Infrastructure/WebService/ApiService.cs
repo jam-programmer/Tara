@@ -24,7 +24,7 @@ namespace Infrastructure.WebService
             catch (Exception ex)
             {
                 _logger.LogError(ex,Message.WebServiceException+$" - {config.BaseUrl}");
-                return default;
+                throw ex;
             }
         }
 
@@ -45,7 +45,7 @@ namespace Infrastructure.WebService
             catch (Exception ex)
             {
                 _logger.LogError(ex, Message.WebServiceException + $" - {config.BaseUrl}");
-                return default;
+                throw ex;
             }
         }
         private void Authorization(string token, in HttpClient httpClient)
@@ -107,11 +107,9 @@ namespace Infrastructure.WebService
                 string responseContent = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<TResult>(responseContent)!;
             }
-
             string responseContentError = await response.Content.ReadAsStringAsync();
-            _logger.LogError( Message.WebServiceExceptionDetail + $" - {responseContentError}");
-
-            return default!;
+            throw new Exception(
+             responseContentError);
         }
 
         public async Task PostWithOutResponseAsync(ApiOption config, CancellationToken cancellationToken)
@@ -129,7 +127,7 @@ namespace Infrastructure.WebService
             catch (Exception ex)
             {
                 _logger.LogError(ex, Message.WebServiceException + $" - {config.BaseUrl}");
-               
+                throw ex;
             }
         }
         private MultipartFormDataContent? SetFormData(Dictionary<string, string> data)

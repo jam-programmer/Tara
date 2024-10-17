@@ -1,4 +1,5 @@
 using Carter;
+using TaraService.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +32,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseExceptionMiddleware();
 app.UseRouting();
-
 app.UseAuthorization();
 app.MapCarter();
 app.MapControllerRoute(

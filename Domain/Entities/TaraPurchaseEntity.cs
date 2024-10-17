@@ -10,6 +10,10 @@ public class TaraPurchaseEntity:BaseEntity
     public string? traceNumber { get; set; }    
     public string? referenceNumber { get; set; }  
     public string? terminal { get; set; }
+
+    public string? PaymentReferenceNumber { set; get; }
+    public string? Type { set; get; }
+
     public PurchaseEnum PurchaseType { set; get; }
     public Guid OrderId { set; get; }
     public OrderEntity? Order { set; get; }

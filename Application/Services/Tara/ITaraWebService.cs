@@ -34,9 +34,17 @@ public interface ITaraWebService
 
     Task GoToIpgPurchaseAsync(IpgPurchaseRequestModel request);
 
+
+
+
     Task<PurchaseVerifyResponseModel>
         PurchaseVerifyAsync(PurchaseVerifyRequestModel request
         ,CancellationToken cancellation=default);
+
+
+
+    Task<OnlinePurchaseInquiryResponseModel> OnlinePurchaseInquiry
+        (PurchaseVerifyRequestModel request,CancellationToken cancellation);
 
 
     #endregion

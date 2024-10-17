@@ -1,6 +1,7 @@
 ﻿using Application.Dto.Purchase;
 using Microsoft.AspNetCore.Http;
 using Application.Model.Tara.Common;
+using Azure;
 namespace Application.Services.Purchase;
 
 public class Purchase : IPurchase
@@ -10,13 +11,17 @@ public class Purchase : IPurchase
     private readonly ITaraWebService _taraWebService;
     private readonly IRepository<OrderDetailEntity> _orderDetailRepository;
     private readonly IRepository<OrderEntity> _orderRepository;
+    private readonly IRepository<TaraPurchaseEntity> _taraPurchaseRepository;
+
     private readonly IContext _context;
     public Purchase(ITaraWebService taraWebService,
         IRepository<OrderDetailEntity> orderDetailRepository,
         IRepository<OrderEntity> orderRepository,
+        IRepository<TaraPurchaseEntity> taraPurchaseRepository,
         IHttpContextAccessor httpContext,
         IContext context)
     {
+        _taraPurchaseRepository = taraPurchaseRepository;
         _httpContextAccessor = httpContext;
         _taraWebService = taraWebService;
         _orderDetailRepository = orderDetailRepository;
@@ -158,9 +163,33 @@ public class Purchase : IPurchase
         {
             return;
         }
-        PurchaseVerifyResponseModel response =
+        try
+        {
+            PurchaseVerifyResponseModel response =
+          await _taraWebService.
+          PurchaseVerifyAsync(new PurchaseVerifyRequestModel()
+          {
+              accessToken = verify.token,
+              ip = _httpContextAccessor.
+              HttpContext.
+              Connection.
+              RemoteIpAddress.ToString()
+          }, cancellation);
+            if (response is null)
+            {
+                return;
+            }
+            if (response.result != "0")
+            {
+                return;
+            }
+            await GenerateTaraPurchaseAsync(order.Id, response);
+        }
+        catch (Exception ex)
+        {
+            OnlinePurchaseInquiryResponseModel response =
             await _taraWebService.
-            PurchaseVerifyAsync(new PurchaseVerifyRequestModel()
+            OnlinePurchaseInquiry(new PurchaseVerifyRequestModel()
             {
                 accessToken = verify.token,
                 ip = _httpContextAccessor.
@@ -168,14 +197,28 @@ public class Purchase : IPurchase
                 Connection.
                 RemoteIpAddress.ToString()
             }, cancellation);
-        if (response is null)
-        {
-            return;
+            if (response is null)
+            {
+                return;
+            }
+            if (response.result != "0")
+            {
+                return;
+            }
+            await GenerateTaraPurchaseAsync(order.Id, response.trackPurchaseList.First());
         }
-
-
-
-
-
+    }
+    private async Task GenerateTaraPurchaseAsync(Guid OrderId, PurchaseVerifyResponseModel model)
+    {
+        TaraPurchaseEntity taraPurchase = new()
+        {
+            OrderId = OrderId,
+            Type = model.type,
+            PaymentReferenceNumber = model.rrn,
+            doTime = model.doTime,
+            message = model.description,
+            PurchaseType = Domain.Enum.PurchaseEnum.PurchaseConfirmation
+        };
+        await _taraPurchaseRepository.InsertAsync(taraPurchase);
     }
 }

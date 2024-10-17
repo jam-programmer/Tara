@@ -1,5 +1,6 @@
 ﻿using Application.Common;
 using Application.Dto.Order;
+using Application.Dto.Purchase;
 using Application.Services.Purchase;
 using Carter;
 using Mapster;
@@ -19,10 +20,11 @@ public class PaymentService : ICarterModule
         baseRoute.MapPost("/BackPaymentGateway", async ([FromBody] BackPaymentGatewayModel response,
             IPurchase purchase) =>
         {
-
-
-
-
+            await purchase.PurchaseVerifyAsync(new VerifyDto() 
+            { 
+                orderId=response.orderId,
+                token=response.token,
+            });
         });
 
 

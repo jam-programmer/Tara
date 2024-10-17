@@ -249,7 +249,7 @@ public class TaraWebService : ITaraWebService
         {
             //Todo Log
         }
-        Dictionary<string, string> data = new();
+      
         PurchaseVerifyResponseModel? response=
          await _apiService.PostAsync<PurchaseVerifyResponseModel>(new ApiOption()
         {
@@ -258,6 +258,28 @@ public class TaraWebService : ITaraWebService
             "api/purchaseVerify",
             DataBody =request
         },cancellation);
+        return response;
+    }
+
+    public async Task<OnlinePurchaseInquiryResponseModel>
+        OnlinePurchaseInquiry(PurchaseVerifyRequestModel request, 
+        CancellationToken cancellation)
+    {
+        AuthenticateResponseModel? authenticate = await
+           GetTemporaryAuthenticateTokenFromCacheAsync()!;
+        if (authenticate is null)
+        {
+            //Todo Log
+        }
+       
+        OnlinePurchaseInquiryResponseModel? response =
+         await _apiService.PostAsync<OnlinePurchaseInquiryResponseModel>(new ApiOption()
+         {
+             BearerToken = authenticate!.accessToken,
+             BaseUrl = DefaultData.BaseUrlOnlinePurchase +
+            "api/purchaseInquiry",
+             DataBody = request
+         }, cancellation);
         return response;
     }
 }

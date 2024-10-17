@@ -1,8 +1,10 @@
-﻿using Application.Common;
+﻿using Application.ApiPolicy;
+using Application.Common;
 using Application.Contracts;
 using Application.Model.Tara.Request;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using Polly.Retry;
 using System.Text;
 using System.Text.Json;
 
@@ -14,49 +16,64 @@ public class TaraWebService : ITaraWebService
     private readonly IDistributedCache _cache;
     private readonly ILogger<TaraWebService> _logger;
     private readonly IApiService _apiService;
+    private readonly AsyncRetryPolicy _apiPolicy;
+
 
     public TaraWebService(IApiService apiService, ILogger<TaraWebService> logger, IDistributedCache cache)
     {
         _cache = cache;
         _logger = logger;
         _apiService = apiService;
+        _apiPolicy = PollyPolicy.CreateRetryPolicy(_logger, TimeSpan.FromSeconds(3));
     }
 
     #region Purchase In Person
-
-
-    public async Task<PurchaseResponseModel>? PurchaseAsync(PurchaseRequestModel request)
+    public async Task<PurchaseResponseModel?> PurchaseAsync(PurchaseRequestModel request)
     {
-        PurchaseResponseModel purchase = await _apiService.PostAsync<PurchaseResponseModel>(new ApiOption()
+
+
+        PurchaseResponseModel? purchase = null;
+        await _apiPolicy.ExecuteAsync(async () =>
         {
-            BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/request/",
-            BearerToken = request.CashDeskToken,
-            DataBody=request
+            purchase = await _apiService.PostAsync<PurchaseResponseModel>(new ApiOption()
+            {
+                BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/request/",
+                BearerToken = request.CashDeskToken,
+                DataBody = request
+            });
         });
+
         return purchase;
     }
-    public async Task<List<MerchandiseGroupResponseModel>>? GetMerchandiseGroupAsync(MerchandiseGroupRequestModel request)
+    public async Task<List<MerchandiseGroupResponseModel>?> GetMerchandiseGroupAsync(MerchandiseGroupRequestModel request)
     {
-        List<MerchandiseGroupResponseModel> merchandise = await _apiService.PostAsync<List<MerchandiseGroupResponseModel>>(new ApiOption()
+        List<MerchandiseGroupResponseModel> merchandise = null;
+        await _apiPolicy.ExecuteAsync(async () =>
         {
-            BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/merchandise/groups",
-            BearerToken = request.paymentRegisterPurchaseToken
+            merchandise = await _apiService.PostAsync<List<MerchandiseGroupResponseModel>>(new ApiOption()
+            {
+                BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/merchandise/groups",
+                BearerToken = request.paymentRegisterPurchaseToken
+            });
         });
         return merchandise;
     }
-
-    public async Task<List<MerchantAccessResponseModel>>? GetMerchantAccessesAsync()
+    public async Task<List<MerchantAccessResponseModel>?> GetMerchantAccessesAsync()
     {
-        TemporaryTokenResponseModel? temporaryToken=await GetTemporaryTokenFromCacheAsync();
-        List<MerchantAccessResponseModel> accesses = await _apiService.PostAsync<List<MerchantAccessResponseModel>>(new ApiOption()
+        TemporaryTokenResponseModel? temporaryToken = await GetTemporaryTokenFromCacheAsync()!;
+        List<MerchantAccessResponseModel> accesses = null;
+        await _apiPolicy.ExecuteAsync(async () =>
         {
-            BaseUrl = DefaultData.BaseUrl + "api/v1/merchant/access/code/",
-            BearerToken = temporaryToken!.accessCode,
-         
-            DataBody = new
+            accesses = await _apiService.PostAsync<List<MerchantAccessResponseModel>>(new ApiOption()
             {
-                DefaultData.branchCode
-            }
+                BaseUrl = DefaultData.BaseUrl + "api/v1/merchant/access/code/",
+                BearerToken = temporaryToken!.accessCode,
+
+                DataBody = new
+                {
+                    DefaultData.branchCode
+                }
+            });
         });
         return accesses;
     }
@@ -80,80 +97,98 @@ public class TaraWebService : ITaraWebService
         }
         return temporaryToken;
     }
-
-    private async Task<TemporaryTokenResponseModel>?
+    private async Task<TemporaryTokenResponseModel?>
         GetTemporaryTokenAsync(CancellationToken cancellation = default)
     {
-        TemporaryTokenResponseModel response = await _apiService.PostAsync<TemporaryTokenResponseModel>(new ApiOption()
+        TemporaryTokenResponseModel? response = null;
+
+        await _apiPolicy.ExecuteAsync(async () =>
         {
-            BaseUrl = DefaultData.BaseUrl + "api/v1/user/login/merchant",
-            DataBody = new
+            response = await _apiService.PostAsync<TemporaryTokenResponseModel>(new ApiOption()
             {
-                DefaultData.principal,
-                DefaultData.password
-            }
+                BaseUrl = DefaultData.BaseUrl + "api/v1/user/login/merchant",
+                DataBody = new
+                {
+                    DefaultData.principal,
+                    DefaultData.password
+                }
+            });
         });
+
+
         return response;
     }
-
-
-    public async Task<TrackingCodeResponseModel>? GetTrackingCodeAsync(PaymentInformationRequestModel request)
+    public async Task<TrackingCodeResponseModel?> GetTrackingCodeAsync(PaymentInformationRequestModel request)
     {
-        TemporaryTokenResponseModel? temporaryToken = await GetTemporaryTokenFromCacheAsync();
-        TrackingCodeResponseModel accesses = await _apiService.PostAsync<TrackingCodeResponseModel>(new ApiOption()
-        {
-            BaseUrl = DefaultData.BaseUrl + "/api/v1/purchase/trace",
-            BearerToken = request.AccessToken,
-            DataBody = request
+        TemporaryTokenResponseModel? temporaryToken = await GetTemporaryTokenFromCacheAsync()!;
+        TrackingCodeResponseModel? accesses = null;
+        await _apiPolicy.ExecuteAsync(async () =>
+           {
 
-        });
+               accesses = await _apiService.PostAsync<TrackingCodeResponseModel>(new ApiOption()
+               {
+                   BaseUrl = DefaultData.BaseUrl + "/api/v1/purchase/trace",
+                   BearerToken = request.AccessToken,
+                   DataBody = request
+
+               });
+           });
         return accesses;
     }
-
-    public async Task<VerifyPurchaseResponseModel>? VerifyPurchaseAsync(VerifyPurchaseRequestModel request)
+    public async Task<VerifyPurchaseResponseModel?> VerifyPurchaseAsync(VerifyPurchaseRequestModel request)
     {
-        VerifyPurchaseResponseModel verifyPurchase =
-            await _apiService.PostAsync<VerifyPurchaseResponseModel>(new ApiOption()
+        VerifyPurchaseResponseModel? verifyPurchase = null;
+        await _apiPolicy.ExecuteAsync(async () =>
         {
-            BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/verify",
-            BearerToken = request.CashDeskToken,
-            DataBody = request
+            verifyPurchase = await _apiService.PostAsync<VerifyPurchaseResponseModel>(new ApiOption()
+            {
+                BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/verify",
+                BearerToken = request.CashDeskToken,
+                DataBody = request
+            });
+
         });
+
         return verifyPurchase;
     }
-
-    public async Task<ReversePurchaseResponseModel>? ReversePurchaseAsync(ReversePurchaseRequestModel request)
+    public async Task<ReversePurchaseResponseModel?> ReversePurchaseAsync(ReversePurchaseRequestModel request)
     {
-        ReversePurchaseResponseModel reversePurchase =
-           await _apiService.PostAsync<ReversePurchaseResponseModel>(new ApiOption()
-           {
-               BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/reverse",
-               BearerToken = request.CashDeskToken,
-               DataBody = request
-           });
+        ReversePurchaseResponseModel? reversePurchase = null;
+
+        await _apiPolicy.ExecuteAsync(async () => {
+            reversePurchase= await _apiService.PostAsync<ReversePurchaseResponseModel>(new ApiOption()
+            {
+                BaseUrl = DefaultData.BaseUrl + "api/v1/purchase/reverse",
+                BearerToken = request.CashDeskToken,
+                DataBody = request
+            });
+        });
+           
         return reversePurchase;
     }
-
-
-
     #endregion
 
 
 
 
 
-    public async Task<AuthenticateResponseModel>? AuthenticateAsync()
+    public async Task<AuthenticateResponseModel?> AuthenticateAsync()
     {
-        AuthenticateResponseModel response = 
-            await _apiService.PostAsync<AuthenticateResponseModel>(new ApiOption()
-        {
-            BaseUrl = DefaultData.BaseUrlOnlinePurchase + "api/v2/authenticate",
-            DataBody = new
+        AuthenticateResponseModel? response = null;
+
+        await _apiPolicy.ExecuteAsync(async () => {
+            response = await _apiService.PostAsync<AuthenticateResponseModel>(new ApiOption()
             {
-                username = DefaultData.OnlinePurchaseUserName,
-               password = DefaultData.OnlinePurchasePassword
-            }
+                BaseUrl = DefaultData.BaseUrlOnlinePurchase + "api/v2/authenticate",
+                DataBody = new
+                {
+                    username = DefaultData.OnlinePurchaseUserName,
+                    password = DefaultData.OnlinePurchasePassword
+                }
+            });
+
         });
+       
         return response;
     }
     private async Task<AuthenticateResponseModel>? GetTemporaryAuthenticateTokenFromCacheAsync()
@@ -179,47 +214,49 @@ public class TaraWebService : ITaraWebService
         }
         return temporaryAuthenticateToken;
     }
-
-    public async Task<List<ProductGroupResponseModel>>? GetProductGroupAsync(CancellationToken cancellationToken = default)
+    public async Task<List<ProductGroupResponseModel>?> GetProductGroupAsync(CancellationToken cancellationToken = default)
     {
         AuthenticateResponseModel? authenticate = await
             GetTemporaryAuthenticateTokenFromCacheAsync()!;
-        if (authenticate is null)
-        {
-            //Todo Log
-        }
-        List<ProductGroupResponseModel> groups =
-            await _apiService.PostAsync<List<ProductGroupResponseModel>>
-            (new ApiOption()
-            {
-                BaseUrl = DefaultData.BaseUrlOnlinePurchase
-                + "api/clubGroups",
-               BearerToken=authenticate!.accessToken
-            });
+      
+        List<ProductGroupResponseModel>? groups = null;
+
+        await _apiPolicy.ExecuteAsync(async () => {
+
+            groups= await _apiService.PostAsync<List<ProductGroupResponseModel>>
+               (new ApiOption()
+               {
+                   BaseUrl = DefaultData.BaseUrlOnlinePurchase
+                   + "api/clubGroups",
+                   BearerToken = authenticate!.accessToken
+               });
+        });
+
+           
         return groups;
     }
-
-    public async Task<TokenPaymentGatewayResponseModel>? 
+    public async Task<TokenPaymentGatewayResponseModel?>
         GetTokenPaymentGatewayAsync(TokenPaymentGatewayRequestModel request,
         CancellationToken cancellationToken = default)
     {
         AuthenticateResponseModel? authenticate = await
            GetTemporaryAuthenticateTokenFromCacheAsync()!;
-        if (authenticate is null)
-        {
-            //Todo Log
-        }
-        TokenPaymentGatewayResponseModel response =
-            await _apiService.PostAsync<TokenPaymentGatewayResponseModel>(new ApiOption()
+
+        TokenPaymentGatewayResponseModel response = null;
+
+        await _apiPolicy.ExecuteAsync(async () => {
+            response = await _apiService.PostAsync<TokenPaymentGatewayResponseModel>(new ApiOption()
             {
                 BaseUrl = DefaultData.BaseUrlOnlinePurchase
-                + "api/getToken",
+                   + "api/getToken",
                 BearerToken = authenticate!.accessToken,
-                DataBody=request
+                DataBody = request
             });
+        });
+
+       
         return response;
     }
-
     public async Task GoToIpgPurchaseAsync(IpgPurchaseRequestModel request)
     {
         AuthenticateResponseModel? authenticate = await
@@ -231,56 +268,58 @@ public class TaraWebService : ITaraWebService
         Dictionary<string, string> data = new();
         data.Add("token", request.token!);
         data.Add("username", request.username!);
-        await _apiService.PostWithOutResponseAsync(new ApiOption()
-        {
-            BearerToken = authenticate!.accessToken,
-            BaseUrl = DefaultData.BaseUrlOnlinePurchase + 
-            "api/ipgPurchase",
-            Data = data
-        });
-    }
 
-    public async Task<PurchaseVerifyResponseModel> PurchaseVerifyAsync
+
+        await _apiPolicy.ExecuteAsync(async () =>
+        {
+            await _apiService.PostWithOutResponseAsync(new ApiOption()
+            {
+                BearerToken = authenticate!.accessToken,
+                BaseUrl = DefaultData.BaseUrlOnlinePurchase +
+            "api/ipgPurchase",
+                Data = data
+            });
+        });
+        
+    }
+    public async Task<PurchaseVerifyResponseModel?> PurchaseVerifyAsync
         (PurchaseVerifyRequestModel request,
         CancellationToken cancellation = default)
     {
         AuthenticateResponseModel? authenticate = await
           GetTemporaryAuthenticateTokenFromCacheAsync()!;
-        if (authenticate is null)
+
+        PurchaseVerifyResponseModel? response = null;
+        await _apiPolicy.ExecuteAsync(async () =>
         {
-            //Todo Log
-        }
-      
-        PurchaseVerifyResponseModel? response=
-         await _apiService.PostAsync<PurchaseVerifyResponseModel>(new ApiOption()
-        {
-            BearerToken = authenticate!.accessToken,
-            BaseUrl = DefaultData.BaseUrlOnlinePurchase +
-            "api/purchaseVerify",
-            DataBody =request
-        },cancellation);
+            response= await _apiService.PostAsync<PurchaseVerifyResponseModel>(new ApiOption()
+            {
+                BearerToken = authenticate!.accessToken,
+                BaseUrl = DefaultData.BaseUrlOnlinePurchase +
+           "api/purchaseVerify",
+                DataBody = request
+            }, cancellation);
+        });
+        
         return response;
     }
-
-    public async Task<OnlinePurchaseInquiryResponseModel>
-        OnlinePurchaseInquiry(PurchaseVerifyRequestModel request, 
+    public async Task<OnlinePurchaseInquiryResponseModel?>
+        OnlinePurchaseInquiry(PurchaseVerifyRequestModel request,
         CancellationToken cancellation)
     {
         AuthenticateResponseModel? authenticate = await
            GetTemporaryAuthenticateTokenFromCacheAsync()!;
-        if (authenticate is null)
+        OnlinePurchaseInquiryResponseModel? response = null;
+        await _apiPolicy.ExecuteAsync(async () =>
         {
-            //Todo Log
-        }
-       
-        OnlinePurchaseInquiryResponseModel? response =
-         await _apiService.PostAsync<OnlinePurchaseInquiryResponseModel>(new ApiOption()
-         {
-             BearerToken = authenticate!.accessToken,
-             BaseUrl = DefaultData.BaseUrlOnlinePurchase +
-            "api/purchaseInquiry",
-             DataBody = request
-         }, cancellation);
+            response= await _apiService.PostAsync<OnlinePurchaseInquiryResponseModel>(new ApiOption()
+            {
+                BearerToken = authenticate!.accessToken,
+                BaseUrl = DefaultData.BaseUrlOnlinePurchase +
+           "api/purchaseInquiry",
+                DataBody = request
+            }, cancellation);
+        });
         return response;
     }
 }
